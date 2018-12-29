@@ -1,8 +1,9 @@
-from math import cos
-from model import SimpleCalculationStructure
+from model import SimpleCalculationStructure, IntegrationCalculationStructure
 from plotting import plot
 
 cs = SimpleCalculationStructure()
-cs.calculate(lambda x: cos(x))
-plot(cs)
+cs.calculate(lambda x: x)
+cs2 = IntegrationCalculationStructure()
+cs2.calculate(lambda x: x)
+plot(cs, cs2)
 

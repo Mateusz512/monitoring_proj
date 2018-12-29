@@ -15,9 +15,9 @@ class SimpleCalculationStructure:
 
 class IntegrationCalculationStructure(SimpleCalculationStructure):
 
-    def integrate(self, tMinus, tNow):
-        return (tMinus + tNow) / 2 * self.step
+    def integrate(self, tMinus, tNow, acc):
+        return (tMinus + tNow) / 2 * self.step + acc
 
     def calculate(self, func):
         for i in range(1, self.entriesCount):
-            self.values[i] = self.integrate(func(self.time[i - 1]), func(self.time[i]))
+            self.values[i] = self.integrate(func(self.time[i - 1]), func(self.time[i]), self.values[i-1])
