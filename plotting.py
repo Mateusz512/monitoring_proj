@@ -5,9 +5,13 @@ from model import SimpleCalculationStructure
 
 class PlotConfig:
 
-    def __init__(self, xLabel="Czas [s]", yLabel="poziom cieczy [l]"):
+    def __init__(self,
+                 xLabel="Czas [s]",
+                 yLabel="poziom cieczy [l]",
+                 title="xDDDDD"):
         self.xLabel = xLabel
         self.yLabel = yLabel
+        self.title = title
 
 
 def plot(*args: SimpleCalculationStructure, config: PlotConfig = PlotConfig()):
@@ -15,4 +19,5 @@ def plot(*args: SimpleCalculationStructure, config: PlotConfig = PlotConfig()):
         plt.plot(cs.time, cs.values)
     plt.xlabel(config.xLabel)
     plt.ylabel(config.yLabel)
+    plt.title(config.title)
     plt.show()
