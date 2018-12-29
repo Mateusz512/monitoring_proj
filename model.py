@@ -1,10 +1,6 @@
 import numpy
 
 
-def integration(tMinus, tNow):
-    return tNow
-
-
 class SimpleCalculationStructure:
 
     def __init__(self, end=10, step=0.1):
@@ -19,8 +15,9 @@ class SimpleCalculationStructure:
 
 class IntegrationCalculationStructure(SimpleCalculationStructure):
 
-    # def integrate(self, ):
+    def integrate(self, tMinus, tNow):
+        return (tMinus + tNow) / 2 * self.step
 
     def calculate(self, func):
         for i in range(1, self.entriesCount):
-            self.values[i] = integration(func(self.time[i - 1]), func(self.time[i]))
+            self.values[i] = self.integrate(func(self.time[i - 1]), func(self.time[i]))

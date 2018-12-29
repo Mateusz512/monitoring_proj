@@ -1,6 +1,8 @@
+from math import cos
 from model import SimpleCalculationStructure
-
-print("siema")
+from plotting import plot
 
 cs = SimpleCalculationStructure()
-print(cs.values)
+cs.calculate(lambda x: cos(x))
+plot(cs)
+
