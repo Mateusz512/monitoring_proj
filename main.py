@@ -1,9 +1,4 @@
-from model import SimpleCalculationStructure, IntegrationCalculationStructure
-from plotting import plot
+from gui import GuiApp
 
-cs = SimpleCalculationStructure()
-cs.calculate(lambda x: x)
-cs2 = IntegrationCalculationStructure()
-cs2.calculate(lambda x: x)
-plot(cs, cs2)
-
+app = GuiApp()
+app.start()
