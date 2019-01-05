@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from model import SimpleCalculationStructure
+from calculation import CalculationStructure
 
 
 class PlotConfig:
@@ -14,7 +14,7 @@ class PlotConfig:
         self.title = title
 
 
-def plot(*args: SimpleCalculationStructure, config: PlotConfig = PlotConfig()):
+def plot(*args: CalculationStructure, config: PlotConfig = PlotConfig()):
     for cs in args:
         plt.plot(cs.time, cs.values)
     plt.xlabel(config.xLabel)
