@@ -1,14 +1,15 @@
 from math import isnan
 from tkinter import *
 
-from model import Model
+from model import TwoSourcesModel
+from inputs import step
 
 
 class GuiApp:
 
     def __init__(self,
                  title="Symulacja zbiornika",
-                 backgroundImagePath=".\\assets\\Zbiornik.png",
+                 backgroundImagePath="./assets/Zbiornik.png",
                  font="Calibri 18"):
         self.top = Tk()
         self.top.title(title)
@@ -32,13 +33,14 @@ class GuiApp:
         self.top.mainloop()
 
     def buttonClick(self):
-        values = {}
-        for key, entry in self.entries.items():
-            values[key] = self.readFromEntry(entry)
+        # values = {}
+        # for key, entry in self.entries.items():
+        #     values[key] = self.readFromEntry(entry)
+        values = {key: self.readFromEntry(entry)  for key, entry in self.entries.items()}
 
         # check if all values are numbers
         if not [k for k, v in values.items() if isnan(v)]:
-            model = Model(values)
+            model = TwoSourcesModel(values, step(1.0))
             model.calculate()
             model.display()
 
