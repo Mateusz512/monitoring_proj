@@ -1,12 +1,11 @@
-import numpy
-
+import numpy as np
 
 class CalculationStructure:
 
-    def __init__(self, end=10, step=0.1):
+    def __init__(self, end=100, step=0.1):
         self.step = step
         self.entriesCount = int(end / step)
-        self.time = numpy.linspace(0, end, self.entriesCount)
+        self.time = np.linspace(0, end, self.entriesCount)
         self.values = [0] * self.entriesCount
 
     def calculate(self, func):

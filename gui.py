@@ -85,8 +85,7 @@ class SingleSourceApp:
         self.validateValues(values)
         # check if all values are numbers
         if not [k for k, v in values.items() if isnan(v)]:
-            model = TwoSourcesModel(values, step(1.0),
-                                    combine(stepDown(1.0, 1.0), combine(stepDown(1.0, 2.0), stepDown(1.0, 3.0))))
+            model = TwoSourcesModel(values)
             model.calculate()
             model.display()
 
