@@ -32,9 +32,14 @@ class TwoSourcesModel(Model):
         a, b = self.regulator.step(time, self.u, self.ratio)
         # print("Inputs: a: {}, b: {}".format(a,b))
         inlet = (a + b)
-        inletRatio = (a * self.ratioA + b * self.ratioB) / inlet
-        ##compute new ratio
-        newRatio = ((self.h * self.S * self.ratio) + (inlet * inletRatio)) / ((self.h * self.S) + inlet)
+        if(self.h + (inlet * delta) > self.hMax):
+            inlet = 0.0
+            a = 0.0
+            b = 0.0
+        else:
+            inletRatio = (a * self.ratioA + b * self.ratioB) / inlet
+            self.ratio = ((self.h * self.S * self.ratio) + (inlet * inletRatio)) / ((self.h * self.S) + inlet)
+       
         # # print(two)
         delimeterRation = self.A / self.S
         out = delimeterRation * sqrt(2 * g * self.h) * -1
@@ -43,10 +48,9 @@ class TwoSourcesModel(Model):
         
         if(value < 0.0):
             value = 0.0
-        if(newRatio < 0.0):
-            newRatio = 0.0
+        if(self.ratio < 0.0):
+           self.ratio = 0.0
         self.h = value
-        self.ratio = newRatio
         self.internalTime = time
         return (self.ratio, self.h, a, b)
 
