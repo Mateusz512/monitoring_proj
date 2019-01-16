@@ -5,6 +5,12 @@ from inputs import *
 from model import TwoSourcesModel
 
 
+def paintEntryValid(entry, isValid):
+    if isValid:
+        entry.config({"background": "White"})
+    else:
+        entry.config({"background": "Red"})
+
 class SingleSourceApp:
 
     def __init__(self,
@@ -13,22 +19,21 @@ class SingleSourceApp:
                  font="Calibri 18"):
         self.top = Tk()
         self.top.title(title)
+        self.font = font
 
         self.backgroundImage = PhotoImage(file=backgroundImagePath)
         self.initBackground(self.backgroundImage)
 
         self.entries = {
-            "initialLevel": Entry(self.top, font=font),
-            "outputDiameter": Entry(self.top, font=font),
-            "tankDiameter": Entry(self.top, font=font),
-            "targetLevel": Entry(self.top, font=font),
-            "maxFlow": Entry(self.top, font=font),
-            "maxLevel": Entry(self.top, font=font)
+            "initialLevel": self.buildEntry("5.3", 812, 212, 132),
+            "outputDiameter": self.buildEntry("0.14", 296, 654, 96),
+            "tankDiameter": self.buildEntry("3", 296, 585, 96),
+            "targetLevel": self.buildEntry("10", 547, 47, 174),
+            "maxFlow": self.buildEntry("5.3", 34, 322, 155),
+            "maxLevel": self.buildEntry("25", 194, 459, 117)
         }
         self.button = Button(self.top, text="Symulacja", font=font, bg='#22AA22', command=self.buttonClick)
-
-        self.initValues()
-        self.placeElements()
+        self.button.place(x=777, y=15, width=167)
 
     def start(self):
         self.top.mainloop()
@@ -39,6 +44,7 @@ class SingleSourceApp:
         #     values[key] = self.readFromEntry(entry)
         values = {key: self.readFromEntry(entry) for key, entry in self.entries.items()}
 
+        self.validateValues(values)
         # check if all values are numbers
         if not [k for k, v in values.items() if isnan(v)]:
             model = TwoSourcesModel(values, step(1.0),
@@ -52,54 +58,36 @@ class SingleSourceApp:
         background_label = Label(self.top, image=backgroundImage)
         background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    def initValues(self):
-        self.entries["maxFlow"].insert(END, "5.3")
-        self.entries["targetLevel"].insert(END, "10")
-        self.entries["tankDiameter"].insert(END, "3")
-        self.entries["outputDiameter"].insert(END, "0.14")
-        self.entries["initialLevel"].insert(END, "2")
-        self.entries["maxLevel"].insert(END, "25")
-
-    def placeElements(self):
-        self.entries["maxFlow"].place(x=34, y=322, width=155)
-        self.entries["targetLevel"].place(x=547, y=47, width=174)
-        self.entries["tankDiameter"].place(x=296, y=585, width=96)
-        self.entries["outputDiameter"].place(x=296, y=654, width=96)
-        self.entries["initialLevel"].place(x=812, y=212, width=132)
-        self.entries["maxLevel"].place(x=194, y=459, width=117)
-        self.button.place(x=777, y=15, width=167)
+    def buildEntry(self, initialValue, x, y, width):
+        entry = Entry(self.top, font=self.font)
+        entry.insert(END, initialValue)
+        entry.place(x=x, y=y, width=width)
+        return entry
 
     def readFromEntry(self, entry: Entry):
         try:
             value = float(entry.get().replace(",", "."))
-            self.paintEntryValid(entry, True)
+            paintEntryValid(entry, True)
             return value
         except ValueError:
-            self.paintEntryValid(entry, False)
+            paintEntryValid(entry, False)
             return float("nan")
-
-    @staticmethod
-    def paintEntryValid(entry, isValid):
-        if isValid:
-            entry.config({"background": "White"})
-        else:
-            entry.config({"background": "Red"})
 
     def validateValues(self, values):
         if values["targetLevel"] >= values["maxLevel"]:
             values["targetLevel"] = float("nan")
             values["maxLevel"] = float("nan")
-            self.paintEntryValid(self.entries["targetLevel"], False)
-            self.paintEntryValid(self.entries["maxLevel"], False)
+            paintEntryValid(self.entries["targetLevel"], False)
+            paintEntryValid(self.entries["maxLevel"], False)
 
         if values["initialLevel"] >= values["maxLevel"]:
             values["initialLevel"] = float("nan")
             values["maxLevel"] = float("nan")
-            self.paintEntryValid(self.entries["initialLevel"], False)
-            self.paintEntryValid(self.entries["maxLevel"], False)
+            paintEntryValid(self.entries["initialLevel"], False)
+            paintEntryValid(self.entries["maxLevel"], False)
 
         if values["outputDiameter"] >= values["tankDiameter"]:
             values["outputDiameter"] = float("nan")
             values["tankDiameter"] = float("nan")
-            self.paintEntryValid(self.entries["outputDiameter"], False)
-            self.paintEntryValid(self.entries["tankDiameter"], False)
+            paintEntryValid(self.entries["outputDiameter"], False)
+            paintEntryValid(self.entries["tankDiameter"], False)
