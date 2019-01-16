@@ -1,4 +1,4 @@
-from gui import SingleSourceApp
+from gui import MainApp
 
-app = SingleSourceApp()
+app = MainApp()
 app.start()
