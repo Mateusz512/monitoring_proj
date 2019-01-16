@@ -3,66 +3,56 @@ from plotting import plot
 from math import sin, e, sqrt
 from .model import Model
 from constants import g
-from regulator import HeightRegulator
+from regulator import ConcentrationRegulator
+from plotting import Label, PlotConfig
 
 class TwoSourcesModel(Model):
 
-    def __init__(self, values: dict):
+    def __init__(self, values):
         self.calcStruc = CalculationStructure()
-        self.values = values
-        self.u = values['targetLevel']
-        self.S = 10.0
-        self.A = 2.0
-        self.y = values['initialLevel']
-        print("target: {}".format(self.u))
-        print("init: {}".format(self.y))
-        print("Flow: {}".format(self.values['maxFlow']))
-
+        self.inA = values['maxFlowA']
+        self.ratioA = values['ratioA']
+        self.inB = values['maxFlowB']
+        self.ratioB = values['ratioB']
+        self.u = values['targetRatio']
+        self.hMax = values['maxLevel']
+        self.h = values['initialLevel']
+        self.ratio = values['initialRatio']
+        self.S = values['tankDiameter']
+        self.A = values['outputDiameter']
         self.internalTime = 0.0
-        # self.regulator = HeightRegulator(2.0, 4.0, 0.1, 0.6)
-        self.rising = True
+        self.regulator = ConcentrationRegulator(self.inA, self.inB, self.ratioA, self.ratioB)
+        self.pc = PlotConfig([Label("czas [s]", "Stężenie [%]", ""), Label("czas [s]", "Wysokość [m]", ""), Label("Czas [s]", "FlowA [m3/s]", ""), Label("Czas [s]", "FlowB [m3/2]", "")])
 
     def modelStep(self, time):
-        # delta = time - self.internalTime
-        # inlet = self.input(self.internalTime) + self.second(self.internalTime)
-        # # print(two)
-        # ratio = self.A / self.S
-        # out = ratio * sqrt(2 * g * self.h) * -1
-        # value =  delta * (out + (inlet / self.S)) + self.h
-        # # value = one + two
-        
-        # if(value < 0.0):
-        #     value = 0.0
-        # self.h = value
-        # self.internalTime = time
-        # return value
+        if(time == self.internalTime):
+            return (self.ratio, self.h, 0.0, 0.0)
         delta = time - self.internalTime
-        e = self.u - self.y
-        sig = self.regulate(e) / self.S
-        # print("Signal: {}".format(sig))
-        ratio = self.A / self.S
-        out = ratio * sqrt(2 * g * self.y) * -1
-        # print("Out: {}".format(out))
-
-        value =  delta * (out + sig) + self.y
-        # value = one + two
+        # inlet = self.input(self.internalTime) + self.second(self.internalTime)
+        a, b = self.regulator.step(time, self.u, self.ratio)
+        # print("Inputs: a: {}, b: {}".format(a,b))
+        inlet = (a + b)
+        inletRatio = (a * self.ratioA + b * self.ratioB) / inlet
+        ##compute new ratio
+        newRatio = ((self.h * self.S * self.ratio) + (inlet * inletRatio)) / ((self.h * self.S) + inlet)
+        # # print(two)
+        delimeterRation = self.A / self.S
+        out = delimeterRation * sqrt(2 * g * self.h) * -1
+        value =  delta * (out + (inlet / self.S)) + self.h
+        # # value = one + two
         
         if(value < 0.0):
             value = 0.0
-        self.y = value
+        if(newRatio < 0.0):
+            newRatio = 0.0
+        self.h = value
+        self.ratio = newRatio
         self.internalTime = time
-        return value
-        
-    def regulate(self, e):
-        if(e > 0.0):
-            return self.values['maxFlow']
-        else:
-            return 0.0
+        return (self.ratio, self.h, a, b)
+
 
     def calculate(self):
         self.calcStruc.calculate(self.modelStep)
 
     def display(self):
-        plot(self.calcStruc)
-
-    
+        plot(self.calcStruc, self.pc)

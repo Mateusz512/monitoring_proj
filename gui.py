@@ -2,7 +2,7 @@ from math import isnan
 from tkinter import *
 
 from inputs import *
-from model import TwoSourcesModel
+from model import OneSourceModel, TwoSourcesModel
 
 
 def paintEntryValid(entry, isValid):
@@ -38,15 +38,18 @@ class MainApp:
         self.double = None
 
     def start(self):
-        self.top.mainloop()
+            self.top.mainloop()
+        
 
     def startSingle(self):
         self.single = SingleSourceApp()
         self.single.start()
+        print("Started single")
 
     def startDouble(self):
         self.double = DoubleSourceApp()
         self.double.start()
+        print("Start duo")
 
 
 class SingleSourceApp:
@@ -56,6 +59,7 @@ class SingleSourceApp:
                  backgroundImagePath="./assets/ZbiornikUno.png",
                  font="Calibri 18"):
         self.top = Toplevel(root)
+        self.top.protocol("WM_DELETE_WINDOW", self.onClose)
         self.top.title(title)
         self.font = font
 
@@ -85,7 +89,7 @@ class SingleSourceApp:
         self.validateValues(values)
         # check if all values are numbers
         if not [k for k, v in values.items() if isnan(v)]:
-            model = TwoSourcesModel(values)
+            model = OneSourceModel(values)
             model.calculate()
             model.display()
 
@@ -128,6 +132,10 @@ class SingleSourceApp:
             values["tankDiameter"] = float("nan")
             paintEntryValid(self.entries["outputDiameter"], False)
             paintEntryValid(self.entries["tankDiameter"], False)
+    
+    def onClose(self):
+        print("CLOSING")
+        self.top.destroy()
 
 
 class DoubleSourceApp:
@@ -170,9 +178,8 @@ class DoubleSourceApp:
         self.validateValues(values)
         # check if all values are numbers
         if not [k for k, v in values.items() if isnan(v)]:
-            model = TwoSourcesModel(values, step(1.0),
-                                    combine(stepDown(1.0, 1.0),
-                                            combine(stepDown(1.0, 2.0), stepDown(1.0, 3.0))))
+            print("Displaying")
+            model = TwoSourcesModel(values)
             model.calculate()
             model.display()
 
