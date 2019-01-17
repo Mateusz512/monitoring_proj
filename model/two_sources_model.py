@@ -22,7 +22,7 @@ class TwoSourcesModel(Model):
         self.A = values['outputDiameter']
         self.internalTime = 0.0
         self.regulator = ConcentrationRegulator(self.inA, self.inB, self.ratioA, self.ratioB)
-        self.pc = PlotConfig([Label("czas [s]", "Stężenie [%]", ""), Label("czas [s]", "Wysokość [m]", ""), Label("Czas [s]", "FlowA [m3/s]", ""), Label("Czas [s]", "FlowB [m3/2]", "")])
+        self.pc = PlotConfig([Label("Czas [s]", "Stężenie [%]", "Stężenie w czasie"), Label("czas [s]", "Wysokość [m]", "Poziom cieczy w czasie"), Label("Czas [s]", "FlowA [m3/s]", "Przepływ w przewodzie 1"), Label("Czas [s]", "FlowB [m3/2]", "Przepływ w przewodzie 2")])
 
     def modelStep(self, time):
         if(time == self.internalTime):

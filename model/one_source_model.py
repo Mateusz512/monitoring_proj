@@ -23,7 +23,7 @@ class OneSourceModel(Model):
         self.y = values['initialLevel']
         self.internalTime = 0.0
         self.regulator = Height2StateRegulator(self.values['maxFlow'])
-        self.pc = PlotConfig([Label( "Czas [s]","Wysokość [m]", ""), Label("Czas [s]", "Przepływ [m3/s]", "")])
+        self.pc = PlotConfig([Label( "Czas [s]","Wysokość [m]", "Wysokość cieczy"), Label("Czas [s]", "Przepływ [m3/s]", "Przepływ w przewodzie")])
 
     def modelStep(self, time):
         if(time == self.internalTime) :
