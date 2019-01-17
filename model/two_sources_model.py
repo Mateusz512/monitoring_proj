@@ -30,7 +30,7 @@ class TwoSourcesModel(Model):
         delta = time - self.internalTime
         # inlet = self.input(self.internalTime) + self.second(self.internalTime)
         a, b = self.regulator.step(time, self.u, self.ratio)
-        # print("Inputs: a: {}, b: {}".format(a,b))
+        
         inlet = (a + b)
         if(self.h + (inlet * delta) > self.hMax):
             inlet = 0.0
